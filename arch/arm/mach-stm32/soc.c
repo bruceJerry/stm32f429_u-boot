@@ -17,8 +17,12 @@ int arch_cpu_init(void)
 		 * Make SDRAM area cacheable & executable.
 		 */
 #if defined(CONFIG_STM32F4)
+/*
 		{ 0x00000000, REGION_0, XN_DIS, PRIV_RW_USR_RW,
 		O_I_WB_RD_WR_ALLOC, REGION_16MB },
+		*/
+		{ 0xC0000000, REGION_0, XN_DIS, PRIV_RW_USR_RW,
+		O_I_WB_RD_WR_ALLOC, REGION_32MB },
 #endif
 
 #if defined(CONFIG_STM32F7)
@@ -27,7 +31,7 @@ int arch_cpu_init(void)
 #endif
 
 #if defined(CONFIG_STM32H7)
-		{ 0xD0000000, REGION_0, XN_DIS, PRIV_RW_USR_RW,
+		{ 0xD0000000, REGION_0, XN_DIS, PRIV_RW_USR_RW, 
 		O_I_WB_RD_WR_ALLOC, REGION_32MB },
 #endif
 	};

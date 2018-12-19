@@ -56,7 +56,7 @@
 	};
 
 	memory {
-		reg = <0x60000000 0x2000000>;
+		reg = <0xC0000000 0x2000000>;
 	};
 
 	aliases {
@@ -66,10 +66,10 @@
 	leds {
 		compatible = "gpio-leds";
 		red {
-			gpios = <&gpiog 14 0>;
+			gpios = <&gpiob 0 0>;
 		};
 		green {
-			gpios = <&gpiog 13 0>;
+			gpios = <&gpiob 1 0>;
 			linux,default-trigger = "heartbeat";
 		};
 	};
