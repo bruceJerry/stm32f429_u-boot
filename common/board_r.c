@@ -205,7 +205,7 @@ static int initr_post_backlog(void)
 #if defined(CONFIG_SYS_INIT_RAM_LOCK) && defined(CONFIG_E500)
 static int initr_unlock_ram_in_cache(void)
 {
-	unlock_ram_in_cache();	/* it's time to unlock D-cache in e500 */
+	unlock_ram_in_cache(); /* it's time to unlock D-cache in e500 */
 	return 0;
 }
 #endif
@@ -236,12 +236,12 @@ static int initr_malloc(void)
 
 #if CONFIG_VAL(SYS_MALLOC_F_LEN)
 	debug("Pre-reloc malloc() used %#lx bytes (%ld KB)\n", gd->malloc_ptr,
-	      gd->malloc_ptr / 1024);
+		  gd->malloc_ptr / 1024);
 #endif
 	/* The malloc area is immediately below the monitor copy in DRAM */
 	malloc_start = gd->relocaddr - TOTAL_MALLOC_LEN;
 	mem_malloc_init((ulong)map_sysmem(malloc_start, TOTAL_MALLOC_LEN),
-			TOTAL_MALLOC_LEN);
+					TOTAL_MALLOC_LEN);
 	return 0;
 }
 
@@ -325,7 +325,7 @@ static int initr_announce(void)
 static int initr_manual_reloc_cmdtable(void)
 {
 	fixup_cmdtable(ll_entry_start(cmd_tbl_t, cmd),
-		       ll_entry_count(cmd_tbl_t, cmd));
+				   ll_entry_count(cmd_tbl_t, cmd));
 	return 0;
 }
 #endif
@@ -350,12 +350,13 @@ static int initr_flash(void)
 	 *
 	 * NOTE: Maybe we should add some WATCHDOG_RESET()? XXX
 	 */
-	if (env_get_yesno("flashchecksum") == 1) {
+	if (env_get_yesno("flashchecksum") == 1)
+	{
 		const uchar *flash_base = (const uchar *)CONFIG_SYS_FLASH_BASE;
 
 		printf("  CRC: %08X", crc32(0,
-					    flash_base,
-					    flash_size));
+									flash_base,
+									flash_size));
 	}
 #endif /* CONFIG_SYS_FLASH_CHECKSUM */
 	putc('\n');
@@ -376,7 +377,7 @@ static int initr_flash(void)
 	/* flash mapped at end of memory map */
 	bd->bi_flashoffset = CONFIG_SYS_TEXT_BASE + flash_size;
 #elif CONFIG_SYS_MONITOR_BASE == CONFIG_SYS_FLASH_BASE
-	bd->bi_flashoffset = monitor_flash_len;	/* reserved area for monitor */
+	bd->bi_flashoffset = monitor_flash_len; /* reserved area for monitor */
 #endif
 	return 0;
 }
@@ -469,7 +470,8 @@ static int initr_env(void)
 static int initr_malloc_bootparams(void)
 {
 	gd->bd->bi_boot_params = (ulong)malloc(CONFIG_SYS_BOOTPARAMS_LEN);
-	if (!gd->bd->bi_boot_params) {
+	if (!gd->bd->bi_boot_params)
+	{
 		puts("WARNING: Cannot allocate space for boot parameters\n");
 		return -ENOMEM;
 	}
@@ -655,16 +657,16 @@ static int run_main_loop(void)
  *
  * We also hope to remove most of the driver-related init and do it if/when
  * the driver is later used.
- *
+ * bruce:各种初始化
  * TODO: perhaps reset the watchdog in the initcall function after each call?
  */
 static init_fnc_t init_sequence_r[] = {
 	initr_trace,
 	initr_reloc,
-	/* TODO: could x86/PPC have this also perhaps? */
+/* TODO: could x86/PPC have this also perhaps? */
 #ifdef CONFIG_ARM
 	initr_caches,
-	/* Note: For Freescale LS2 SoCs, new MMU table is created in DDR.
+/* Note: For Freescale LS2 SoCs, new MMU table is created in DDR.
 	 *	 A temporary mapping of IFC high region is since removed,
 	 *	 so environmental variables in NOR flash is not available
 	 *	 until board_init() is called below to remap IFC to high
@@ -678,7 +680,7 @@ static init_fnc_t init_sequence_r[] = {
 	initr_barrier,
 	initr_malloc,
 	log_init,
-	initr_bootstage,	/* Needs malloc() but has its own timer */
+	initr_bootstage, /* Needs malloc() but has its own timer */
 	initr_console_record,
 #ifdef CONFIG_SYS_NONCACHED_MEMORY
 	initr_noncached,
@@ -691,9 +693,9 @@ static init_fnc_t init_sequence_r[] = {
 	initr_dm,
 #endif
 #if defined(CONFIG_ARM) || defined(CONFIG_NDS32) || defined(CONFIG_RISCV)
-	board_init,	/* Setup chipselects */
+	board_init, /* Setup chipselects */
 #endif
-	/*
+/*
 	 * TODO: printing of the clock inforamtion of the board is now
 	 * implemented as part of bdinfo command. Currently only support for
 	 * davinci SOC's is added. Remove this check once all the board
@@ -710,7 +712,7 @@ static init_fnc_t init_sequence_r[] = {
 	initr_announce,
 	INIT_FUNC_WATCHDOG_RESET
 #ifdef CONFIG_NEEDS_MANUAL_RELOC
-	initr_manual_reloc_cmdtable,
+		initr_manual_reloc_cmdtable,
 #endif
 #if defined(CONFIG_PPC) || defined(CONFIG_M68K) || defined(CONFIG_MIPS)
 	initr_trap,
@@ -723,15 +725,15 @@ static init_fnc_t init_sequence_r[] = {
 #endif
 	INIT_FUNC_WATCHDOG_RESET
 #ifdef CONFIG_POST
-	initr_post_backlog,
+		initr_post_backlog,
 #endif
 	INIT_FUNC_WATCHDOG_RESET
 #if defined(CONFIG_PCI) && defined(CONFIG_SYS_EARLY_PCI_INIT)
-	/*
+		/*
 	 * Do early PCI configuration _before_ the flash gets initialised,
 	 * because PCU resources are crucial for flash access on some boards.
 	 */
-	initr_pci,
+		initr_pci,
 #endif
 #ifdef CONFIG_ARCH_EARLY_INIT_R
 	arch_early_init_r,
@@ -742,8 +744,8 @@ static init_fnc_t init_sequence_r[] = {
 #endif
 	INIT_FUNC_WATCHDOG_RESET
 #if defined(CONFIG_PPC) || defined(CONFIG_M68K) || defined(CONFIG_X86)
-	/* initialize higher level parts of CPU like time base and timers */
-	cpu_init_r,
+		/* initialize higher level parts of CPU like time base and timers */
+		cpu_init_r,
 #endif
 #ifdef CONFIG_PPC
 	initr_spi,
@@ -762,48 +764,48 @@ static init_fnc_t init_sequence_r[] = {
 	initr_malloc_bootparams,
 #endif
 	INIT_FUNC_WATCHDOG_RESET
-	initr_secondary_cpu,
+		initr_secondary_cpu,
 #if defined(CONFIG_ID_EEPROM) || defined(CONFIG_SYS_I2C_MAC_OFFSET)
 	mac_read_from_eeprom,
 #endif
 	INIT_FUNC_WATCHDOG_RESET
 #if defined(CONFIG_PCI) && !defined(CONFIG_SYS_EARLY_PCI_INIT)
-	/*
+		/*
 	 * Do pci configuration
 	 */
-	initr_pci,
+		initr_pci,
 #endif
 	stdio_add_devices,
 	initr_jumptable,
 #ifdef CONFIG_API
 	initr_api,
 #endif
-	console_init_r,		/* fully init console as a device */
+	console_init_r, /* fully init console as a device */
 #ifdef CONFIG_DISPLAY_BOARDINFO_LATE
 	console_announce_r,
 	show_board_info,
 #endif
 #ifdef CONFIG_ARCH_MISC_INIT
-	arch_misc_init,		/* miscellaneous arch-dependent init */
+	arch_misc_init, /* miscellaneous arch-dependent init */
 #endif
 #ifdef CONFIG_MISC_INIT_R
-	misc_init_r,		/* miscellaneous platform-dependent init */
+	misc_init_r, /* miscellaneous platform-dependent init */
 #endif
 	INIT_FUNC_WATCHDOG_RESET
 #ifdef CONFIG_CMD_KGDB
-	initr_kgdb,
+		initr_kgdb,
 #endif
 	interrupt_init,
 #ifdef CONFIG_ARM
 	initr_enable_interrupts,
 #endif
 #if defined(CONFIG_MICROBLAZE) || defined(CONFIG_M68K)
-	timer_init,		/* initialize timer */
+	timer_init, /* initialize timer */
 #endif
 #if defined(CONFIG_LED_STATUS)
 	initr_status_led,
 #endif
-	/* PPC has a udelay(20) here dating from 2002. Why? */
+/* PPC has a udelay(20) here dating from 2002. Why? */
 #ifdef CONFIG_CMD_NET
 	initr_ethaddr,
 #endif
@@ -812,14 +814,14 @@ static init_fnc_t init_sequence_r[] = {
 #endif
 #if defined(CONFIG_SCSI) && !defined(CONFIG_DM_SCSI)
 	INIT_FUNC_WATCHDOG_RESET
-	initr_scsi,
+		initr_scsi,
 #endif
 #ifdef CONFIG_BITBANGMII
 	initr_bbmii,
 #endif
 #ifdef CONFIG_CMD_NET
 	INIT_FUNC_WATCHDOG_RESET
-	initr_net,
+		initr_net,
 #endif
 #ifdef CONFIG_POST
 	initr_post,
@@ -832,16 +834,16 @@ static init_fnc_t init_sequence_r[] = {
 #endif
 #ifdef CONFIG_LAST_STAGE_INIT
 	INIT_FUNC_WATCHDOG_RESET
-	/*
+		/*
 	 * Some parts can be only initialized if all others (like
 	 * Interrupts) are up and running (i.e. the PC-style ISA
 	 * keyboard).
 	 */
-	last_stage_init,
+		last_stage_init,
 #endif
 #ifdef CONFIG_CMD_BEDBUG
 	INIT_FUNC_WATCHDOG_RESET
-	initr_bedbug,
+		initr_bedbug,
 #endif
 #if defined(CONFIG_PRAM)
 	initr_mem,
